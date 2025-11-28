@@ -116,6 +116,41 @@ section {
   padding-bottom: 110px !important;
 }
 
+.header,
+.navbar {
+  background: #b61fb1;
+  box-shadow: 0 3px 20px rgba(0,0,0,0.08);
+}
+
+.navbar a {
+  color: #222;
+  font-weight: 600;
+}
+
+.navbar a:hover {
+  color: #0056ff;
+}
+
+.btn {
+  background: linear-gradient(135deg, #0056ff, #002f88);
+  color: #ffffff !important;
+  padding: 14px 30px !important;
+  border-radius: 50px !important;
+  font-size: 1.1rem !important;
+  transition: 0.3s ease-in-out !important;
+  box-shadow: 0 4px 14px rgba(0, 86, 255, 0.4);
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #ff5500, #cc4400);
+  box-shadow: 0 6px 20px rgba(255, 85, 0, 0.5);
+}
+
+.btn:active {
+  background: #111111 !important;
+  transform: scale(0.95);
+}
+
 /* Lists */
 ul.custom-list {
   list-style: none;
@@ -193,3 +228,4 @@ table.custom-table {
 .custom-table td.text-left {
   text-align: left;
 }
+
