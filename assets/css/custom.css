@@ -239,13 +239,20 @@ table.custom-table {
   white-space: nowrap; border: 0; padding: 0; margin: -1px;
 }
 
+/* Respect reduced motion but limit scope to our animations to avoid
+   globally disabling third-party library effects. */
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+  .loader-dots span,
+  .animated-gradient,
+  .floating-shape,
+  .icon-deco,
+  [class*="animate-"],
+  #css-loader,
+  #css-loader .loader-dots span {
+    animation: none !important;
+    transition: none !important;
   }
+  html { scroll-behavior: auto !important; }
 }
 
 
@@ -323,14 +330,15 @@ html.loaded #css-loader {
 
 
 .loader-dots span {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: linear-gradient(135deg,#0056ff,#00aaff);
+  /* Updated gradient for a modern look */
+  background: linear-gradient(135deg,#6C5CE7,#00B4D8);
   display: block;
   transform-origin: center;
-  opacity: 0.85;
-  box-shadow: 0 6px 14px rgba(0,86,255,0.18);
+  opacity: 0.95;
+  box-shadow: 0 8px 18px rgba(108,92,231,0.18);
   animation: loaderPulse 1.1s infinite ease-in-out;
 }
 
@@ -370,9 +378,9 @@ html.loaded #css-loader {
 
 
 .animated-gradient {
-  background: linear-gradient(270deg,#ff9a9e,#fad0c4,#a1c4fd,#c2e9fb);
+  background: linear-gradient(270deg,#6C5CE7,#00B4D8,#7FD3A7,#FFD6E0);
   background-size: 800% 800%;
-  animation: gradientShift 18s ease infinite;
+  animation: gradientShift 16s ease infinite;
   border-radius: 10px;
 }
 

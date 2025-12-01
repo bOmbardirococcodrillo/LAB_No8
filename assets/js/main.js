@@ -70,6 +70,18 @@
     });
   }
 
+  // Also remove the CSS loader element (#css-loader) once the page fully loads.
+  // This complements the CSS transition that hides it when html.site-ready is added.
+  const cssLoader = document.querySelector('#css-loader');
+  if (cssLoader) {
+    window.addEventListener('load', () => {
+      // small delay to allow the CSS fade-out to run for 300ms
+      setTimeout(() => {
+        if (cssLoader && cssLoader.parentNode) cssLoader.parentNode.removeChild(cssLoader);
+      }, 350);
+    });
+  }
+
   /**
    * Scroll top button
    */
