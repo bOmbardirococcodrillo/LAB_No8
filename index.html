@@ -38,6 +38,12 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
 </head>
+<div id="css-loader" aria-hidden="true" role="status">
+  <div class="loader-dots" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+  <span class="visually-hidden">Loading…</span>
+</div>
 
 <body class="index-page">
 
@@ -1030,6 +1036,12 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script>
+  // Optional: hide loader when page finishes loading
+  window.addEventListener('load', function () {
+    document.documentElement.classList.add('site-ready');
+  });
+</script>
 
 </body>
 
