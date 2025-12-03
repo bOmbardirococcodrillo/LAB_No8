@@ -866,31 +866,76 @@
           </div>
 
           <div class="col-lg-8">
-            <form action="forms/contact.php" method="post" class="php-email-form">
+            <form id="contactForm" class="custom-contact-form">
               <div class="row gy-4">
 
+                <!-- Name Field -->
                 <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                  <label for="formName" class="form-label">Name *</label>
+                  <input type="text" id="formName" class="form-control" placeholder="John" required>
                 </div>
 
+                <!-- Surname Field -->
                 <div class="col-md-6">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+                  <label for="formSurname" class="form-label">Surname *</label>
+                  <input type="text" id="formSurname" class="form-control" placeholder="Smith" required>
                 </div>
 
+                <!-- Email Field -->
+                <div class="col-md-6">
+                  <label for="formEmail" class="form-label">Email *</label>
+                  <input type="email" id="formEmail" class="form-control" placeholder="john@example.com" required>
+                </div>
+
+                <!-- Phone Number Field -->
+                <div class="col-md-6">
+                  <label for="formPhone" class="form-label">Phone number *</label>
+                  <input type="tel" id="formPhone" class="form-control" placeholder="+370 6xx xxxxx" required>
+                </div>
+
+                <!-- Address Field -->
                 <div class="col-md-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+                  <label for="formAddress" class="form-label">Address *</label>
+                  <input type="text" id="formAddress" class="form-control" placeholder="Street, City, Postal Code" required>
                 </div>
 
+                <!-- Rating Questions (1-10 scale using sliders) -->
                 <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
+                  <div class="rating-section">
+                    <h5 class="mb-3">Rate the following (1-10 scale):</h5>
+
+                    <!-- Rating 1 -->
+                    <div class="rating-item mb-3">
+                      <label for="formRating1" class="form-label">Question 1: How satisfied are you? *</label>
+                      <div class="rating-input-group">
+                        <input type="range" id="formRating1" class="form-range" min="1" max="10" value="5" required>
+                        <span class="rating-value" id="ratingValue1">5</span>
+                      </div>
+                    </div>
+
+                    <!-- Rating 2 -->
+                    <div class="rating-item mb-3">
+                      <label for="formRating2" class="form-label">Question 2: How would you rate the quality? *</label>
+                      <div class="rating-input-group">
+                        <input type="range" id="formRating2" class="form-range" min="1" max="10" value="5" required>
+                        <span class="rating-value" id="ratingValue2">5</span>
+                      </div>
+                    </div>
+
+                    <!-- Rating 3 -->
+                    <div class="rating-item mb-3">
+                      <label for="formRating3" class="form-label">Question 3: How likely are you to recommend? *</label>
+                      <div class="rating-input-group">
+                        <input type="range" id="formRating3" class="form-range" min="1" max="10" value="5" required>
+                        <span class="rating-value" id="ratingValue3">5</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
+                <!-- Submit Button -->
                 <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                  <button type="submit">Send Message</button>
+                  <button type="submit" class="btn btn-primary">Submit Form</button>
                 </div>
 
               </div>
@@ -1036,10 +1081,35 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+  <!-- Custom JS for Lab 5 -->
+  <script src="assets/js/custom.js"></script>
   <script>
   // Optional: hide loader when page finishes loading
   window.addEventListener('load', function () {
     document.documentElement.classList.add('site-ready');
+  });
+
+  // Update rating values in real-time
+  document.addEventListener('DOMContentLoaded', function() {
+    const rating1 = document.getElementById('formRating1');
+    const rating2 = document.getElementById('formRating2');
+    const rating3 = document.getElementById('formRating3');
+    
+    if (rating1) {
+      rating1.addEventListener('input', function() {
+        document.getElementById('ratingValue1').textContent = this.value;
+      });
+    }
+    if (rating2) {
+      rating2.addEventListener('input', function() {
+        document.getElementById('ratingValue2').textContent = this.value;
+      });
+    }
+    if (rating3) {
+      rating3.addEventListener('input', function() {
+        document.getElementById('ratingValue3').textContent = this.value;
+      });
+    }
   });
 </script>
 
