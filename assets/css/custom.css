@@ -731,3 +731,354 @@ html.site-ready #css-loader {
     width: 100%;
   }
 }
+
+/* ==================== LAB 12: Memory Game ==================== */
+
+.memory-game-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.memory-game-section .section-title {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.memory-game-section .section-title h2 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.memory-game-section .subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Game Container */
+.game-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+/* Game Controls */
+.game-controls {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.game-controls label {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.game-controls select {
+  padding: 10px 15px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.game-controls select:hover,
+.game-controls select:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  outline: none;
+}
+
+.game-controls select option {
+  background: #333;
+  color: white;
+  padding: 10px;
+}
+
+/* Stats Panel */
+.stats-panel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  font-size: 13px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stat-item.best-score .stat-value {
+  color: #00ff88;
+}
+
+/* Game Board */
+.game-board {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 30px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+  min-height: 300px;
+}
+
+/* Memory Card */
+.memory-card {
+  aspect-ratio: 1;
+  perspective: 1000px;
+  cursor: pointer;
+  position: relative;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform-style: preserve-3d;
+}
+
+.memory-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 32px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-front:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.card-back {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transform: rotateY(180deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Win Message */
+.win-message {
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 10px;
+  margin-bottom: 30px;
+  animation: slideInDown 0.5s ease-out;
+}
+
+.win-message h3 {
+  font-size: 36px;
+  margin: 0 0 15px 0;
+  color: white;
+}
+
+.win-message p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* Game Buttons */
+.game-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-game {
+  padding: 12px 35px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-game:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.btn-game:active {
+  transform: translateY(0);
+}
+
+.btn-game:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .memory-game-section {
+    padding: 50px 0;
+  }
+
+  .game-container {
+    padding: 25px;
+  }
+
+  .stats-panel {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .game-board {
+    gap: 10px;
+    padding: 15px;
+    min-height: 250px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 24px;
+  }
+
+  .game-controls {
+    flex-direction: column;
+  }
+
+  .game-buttons {
+    flex-direction: column;
+  }
+
+  .btn-game {
+    width: 100%;
+  }
+
+  .win-message h3 {
+    font-size: 28px;
+  }
+
+  .win-message p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .memory-game-section {
+    padding: 40px 15px;
+  }
+
+  .game-container {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .stats-panel {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .game-board {
+    gap: 8px;
+    padding: 12px;
+    min-height: 200px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 20px;
+    border-radius: 6px;
+  }
+
+  .game-controls select {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .btn-game {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-inner,
+  .btn-game,
+  .game-controls select,
+  .win-message {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .memory-card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+}

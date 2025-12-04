@@ -395,3 +395,411 @@ function handlePhoneKeydown(e) {
   }
 }
 
+/* ==================== LAB 12: Memory Game ==================== */
+
+// Memory game data - at least 6 unique items
+const GAME_ITEMS = [
+  { id: 1, name: '🎨', label: 'Art' },
+  { id: 2, name: '🎭', label: 'Theater' },
+  { id: 3, name: '🎵', label: 'Music' },
+  { id: 4, name: '📚', label: 'Books' },
+  { id: 5, name: '⚽', label: 'Sports' },
+  { id: 6, name: '🎮', label: 'Games' }
+];
+
+// Game configuration
+const GAME_CONFIG = {
+  easy: { rows: 3, cols: 4, name: 'Easy (3×4)' },
+  hard: { rows: 4, cols: 6, name: 'Hard (4×6)' }
+};
+
+// Game state
+let gameState = {
+  difficulty: 'easy',
+  cards: [],
+  flipped: [],
+  matched: [],
+  moves: 0,
+  matches: 0,
+  gameActive: false,
+  startTime: null,
+  timerInterval: null
+};
+
+// Initialize memory game on page load
+document.addEventListener('DOMContentLoaded', function() {
+  initializeMemoryGame();
+});
+
+/**
+ * Initialize memory game
+ */
+function initializeMemoryGame() {
+  // Check if game section exists, create if needed
+  let gameSection = document.getElementById('memoryGameSection');
+  if (!gameSection) {
+    createGameSection();
+    gameSection = document.getElementById('memoryGameSection');
+  }
+
+  // Attach event listeners
+  const difficultySelect = document.getElementById('difficultyLevel');
+  if (difficultySelect) {
+    difficultySelect.addEventListener('change', changeDifficulty);
+  }
+
+  const startBtn = document.getElementById('gameStartBtn');
+  if (startBtn) {
+    startBtn.addEventListener('click', startGame);
+  }
+
+  const restartBtn = document.getElementById('gameRestartBtn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', restartGame);
+  }
+
+  // Initialize with easy difficulty
+  initializeBoard();
+}
+
+/**
+ * Create game section HTML
+ */
+function createGameSection() {
+  const main = document.querySelector('main');
+  if (!main) return;
+
+  const gameHTML = `
+    <section id="memoryGameSection" class="memory-game-section">
+      <div class="container">
+        <div class="section-title" data-aos="fade-up">
+          <span class="subtitle">Game</span>
+          <h2>Memory Game</h2>
+        </div>
+
+        <div class="game-container">
+          <!-- Difficulty Selector -->
+          <div class="game-controls">
+            <label for="difficultyLevel">Difficulty Level:</label>
+            <select id="difficultyLevel">
+              <option value="easy">Easy (3×4 = 12 cards)</option>
+              <option value="hard">Hard (4×6 = 24 cards)</option>
+            </select>
+          </div>
+
+          <!-- Stats Panel -->
+          <div class="stats-panel">
+            <div class="stat-item">
+              <span class="stat-label">Moves:</span>
+              <span class="stat-value" id="movesCount">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Matches:</span>
+              <span class="stat-value" id="matchesCount">0 / 6</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Time:</span>
+              <span class="stat-value" id="timerDisplay">00:00</span>
+            </div>
+            <div class="stat-item best-score">
+              <span class="stat-label">Best:</span>
+              <span class="stat-value" id="bestScore">-</span>
+            </div>
+          </div>
+
+          <!-- Game Board -->
+          <div class="game-board" id="gameBoard"></div>
+
+          <!-- Win Message -->
+          <div class="win-message" id="winMessage" style="display: none;">
+            <h3>🎉 You Won! 🎉</h3>
+            <p id="winStats"></p>
+          </div>
+
+          <!-- Game Buttons -->
+          <div class="game-buttons">
+            <button id="gameStartBtn" class="btn btn-game">Start Game</button>
+            <button id="gameRestartBtn" class="btn btn-game">Restart</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  main.insertAdjacentHTML('beforeend', gameHTML);
+}
+
+/**
+ * Initialize game board
+ */
+function initializeBoard() {
+  const config = GAME_CONFIG[gameState.difficulty];
+  const totalCards = config.rows * config.cols;
+  const pairsCount = totalCards / 2;
+
+  // Create card array with pairs
+  gameState.cards = [];
+  for (let i = 0; i < pairsCount; i++) {
+    const item = GAME_ITEMS[i % GAME_ITEMS.length];
+    gameState.cards.push({ ...item, pairId: i });
+    gameState.cards.push({ ...item, pairId: i });
+  }
+
+  // Shuffle cards
+  gameState.cards = shuffleArray(gameState.cards);
+
+  // Reset game state
+  gameState.flipped = [];
+  gameState.matched = [];
+  gameState.moves = 0;
+  gameState.matches = 0;
+  gameState.gameActive = false;
+
+  // Render board
+  renderBoard();
+
+  // Update stats
+  updateStats();
+  updateMatchesCount();
+  displayBestScore();
+}
+
+/**
+ * Render game board
+ */
+function renderBoard() {
+  const board = document.getElementById('gameBoard');
+  if (!board) return;
+
+  board.innerHTML = '';
+  const config = GAME_CONFIG[gameState.difficulty];
+  board.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
+
+  gameState.cards.forEach((card, index) => {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'memory-card';
+    cardElement.dataset.index = index;
+    cardElement.dataset.pairId = card.pairId;
+    cardElement.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">?</div>
+        <div class="card-back">${card.name}</div>
+      </div>
+    `;
+
+    cardElement.addEventListener('click', () => flipCard(index));
+    board.appendChild(cardElement);
+  });
+}
+
+/**
+ * Flip card
+ */
+function flipCard(index) {
+  if (!gameState.gameActive) return;
+  if (gameState.flipped.includes(index)) return;
+  if (gameState.matched.includes(index)) return;
+
+  const card = document.querySelector(`[data-index="${index}"]`);
+  if (!card) return;
+
+  gameState.flipped.push(index);
+  card.classList.add('flipped');
+
+  if (gameState.flipped.length === 2) {
+    checkMatch();
+  }
+}
+
+/**
+ * Check if two flipped cards match
+ */
+function checkMatch() {
+  const [index1, index2] = gameState.flipped;
+  const card1 = gameState.cards[index1];
+  const card2 = gameState.cards[index2];
+
+  gameState.moves++;
+  updateStats();
+
+  if (card1.pairId === card2.pairId) {
+    // Cards match
+    gameState.matched.push(index1, index2);
+    gameState.matches++;
+    updateMatchesCount();
+
+    gameState.flipped = [];
+
+    // Check for win
+    if (gameState.matches === gameState.cards.length / 2) {
+      endGame();
+    }
+  } else {
+    // Cards don't match - flip back
+    setTimeout(() => {
+      const card1El = document.querySelector(`[data-index="${index1}"]`);
+      const card2El = document.querySelector(`[data-index="${index2}"]`);
+      if (card1El) card1El.classList.remove('flipped');
+      if (card2El) card2El.classList.remove('flipped');
+      gameState.flipped = [];
+    }, 1000);
+  }
+}
+
+/**
+ * Start game
+ */
+function startGame() {
+  gameState.gameActive = true;
+  gameState.startTime = Date.now();
+  startTimer();
+
+  const startBtn = document.getElementById('gameStartBtn');
+  if (startBtn) startBtn.disabled = true;
+
+  const winMessage = document.getElementById('winMessage');
+  if (winMessage) winMessage.style.display = 'none';
+}
+
+/**
+ * Restart game
+ */
+function restartGame() {
+  stopTimer();
+  initializeBoard();
+
+  const startBtn = document.getElementById('gameStartBtn');
+  if (startBtn) startBtn.disabled = false;
+
+  const winMessage = document.getElementById('winMessage');
+  if (winMessage) winMessage.style.display = 'none';
+}
+
+/**
+ * End game (win)
+ */
+function endGame() {
+  gameState.gameActive = false;
+  stopTimer();
+
+  const startBtn = document.getElementById('gameStartBtn');
+  if (startBtn) startBtn.disabled = false;
+
+  const elapsedTime = Math.floor((Date.now() - gameState.startTime) / 1000);
+
+  // Check and save best score
+  saveBestScore(gameState.moves);
+
+  // Show win message
+  const winMessage = document.getElementById('winMessage');
+  const winStats = document.getElementById('winStats');
+  if (winMessage && winStats) {
+    winStats.textContent = `Completed in ${gameState.moves} moves and ${formatTime(elapsedTime)}!`;
+    winMessage.style.display = 'block';
+  }
+}
+
+/**
+ * Update stats display
+ */
+function updateStats() {
+  const movesCount = document.getElementById('movesCount');
+  if (movesCount) movesCount.textContent = gameState.moves;
+}
+
+/**
+ * Update matches count display
+ */
+function updateMatchesCount() {
+  const matchesCount = document.getElementById('matchesCount');
+  const totalPairs = gameState.cards.length / 2;
+  if (matchesCount) matchesCount.textContent = `${gameState.matches} / ${totalPairs}`;
+}
+
+/**
+ * Change difficulty
+ */
+function changeDifficulty(event) {
+  gameState.difficulty = event.target.value;
+  stopTimer();
+  initializeBoard();
+
+  const startBtn = document.getElementById('gameStartBtn');
+  if (startBtn) startBtn.disabled = false;
+
+  const winMessage = document.getElementById('winMessage');
+  if (winMessage) winMessage.style.display = 'none';
+
+  displayBestScore();
+}
+
+/**
+ * Start timer
+ */
+function startTimer() {
+  let seconds = 0;
+  gameState.timerInterval = setInterval(() => {
+    seconds++;
+    const timerDisplay = document.getElementById('timerDisplay');
+    if (timerDisplay) {
+      timerDisplay.textContent = formatTime(seconds);
+    }
+  }, 1000);
+}
+
+/**
+ * Stop timer
+ */
+function stopTimer() {
+  if (gameState.timerInterval) {
+    clearInterval(gameState.timerInterval);
+    gameState.timerInterval = null;
+  }
+}
+
+/**
+ * Format time (seconds to MM:SS)
+ */
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+/**
+ * Save best score to localStorage
+ */
+function saveBestScore(moves) {
+  const key = `bestScore_${gameState.difficulty}`;
+  const currentBest = localStorage.getItem(key);
+
+  if (!currentBest || moves < parseInt(currentBest)) {
+    localStorage.setItem(key, moves);
+    displayBestScore();
+  }
+}
+
+/**
+ * Display best score from localStorage
+ */
+function displayBestScore() {
+  const key = `bestScore_${gameState.difficulty}`;
+  const bestScore = localStorage.getItem(key);
+  const bestScoreEl = document.getElementById('bestScore');
+
+  if (bestScoreEl) {
+    bestScoreEl.textContent = bestScore ? `${bestScore} moves` : '-';
+  }
+}
+
+/**
+ * Shuffle array
+ */
+function shuffleArray(arr) {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
