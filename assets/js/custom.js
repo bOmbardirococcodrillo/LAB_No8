@@ -96,8 +96,9 @@ function validateFormData(data) {
     return false;
   }
   
-  // Phone validation (non-empty)
-  if (!data.phone) {
+  // Phone validation (non-empty and has enough digits)
+  const phoneDigits = data.phone.replace(/\D/g, '');
+  if (!data.phone || phoneDigits.length < 11) {
     return false;
   }
   
@@ -255,9 +256,11 @@ function validateField(e) {
       errorMessage = 'Invalid email format';
     }
   } else if (fieldId === 'formPhone') {
-    if (!field.value.trim()) {
+    // For phone, just check if it has enough digits (at least 11 after removing non-digits)
+    const digitsOnly = field.value.replace(/\D/g, '');
+    if (digitsOnly.length < 11) {
       isValid = false;
-      errorMessage = 'Phone number required';
+      errorMessage = 'Phone must have at least 11 digits (+370 format)';
     }
   } else if (fieldId === 'formAddress') {
     if (!field.value.trim() || field.value.trim().length < 5) {
@@ -349,23 +352,34 @@ function escapeHtml(text) {
  */
 function formatPhoneNumber(e) {
   const input = e.target;
-  let value = input.value.replace(/\D/g, ''); // Remove non-digits
+  let value = input.value.replace(/\D/g, ''); // Remove all non-digits
   
-  // Limit to 12 digits (370 + 6 + 8 digits)
+  // Limit to 12 digits (370 + 6 + 8 digits for Lithuanian format)
   if (value.length > 12) {
     value = value.slice(0, 12);
   }
   
-  // Format: +370 6xx xxxxx
+  // Format based on length:
+  // 370 = +370
+  // 3706 = +370 6
+  // 37061234 = +370 61 234
+  // 370612345678 = +370 61 234 5678
+  let formatted = '';
+  
   if (value.length === 0) {
-    input.value = '';
+    formatted = '';
   } else if (value.length <= 3) {
-    input.value = '+' + value;
+    formatted = '+' + value;
   } else if (value.length <= 5) {
-    input.value = '+' + value.slice(0, 3) + ' ' + value.slice(3);
+    formatted = '+' + value.slice(0, 3) + ' ' + value.slice(3);
   } else {
-    input.value = '+' + value.slice(0, 3) + ' ' + value.slice(3, 5) + ' ' + value.slice(5);
+    formatted = '+' + value.slice(0, 3) + ' ' + value.slice(3, 5) + ' ' + value.slice(5);
   }
+  
+  input.value = formatted;
+  
+  // Log for debugging
+  console.log('Phone formatted:', formatted);
 }
 
 /**

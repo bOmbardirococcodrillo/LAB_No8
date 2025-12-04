@@ -230,181 +230,182 @@ table.custom-table {
 }
 
 
-/* Lab 10=========================================================*/
+/* ==================== LAB 10: CSS Animations and Loader ==================== */
 
-.visually-hidden {
-  position: absolute !important;
-  height: 1px; width: 1px;
-  overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap; border: 0; padding: 0; margin: -1px;
-}
+/* Task 1 & 2: Custom CSS file linked last, semantic layout verified in HTML */
 
-/* Respect reduced motion but limit scope to our animations to avoid
-   globally disabling third-party library effects. */
-@media (prefers-reduced-motion: reduce) {
-  .loader-dots span,
-  .animated-gradient,
-  .floating-shape,
-  .icon-deco,
-  [class*="animate-"],
-  #css-loader,
-  #css-loader .loader-dots span {
-    animation: none !important;
-    transition: none !important;
+/* Task 3: Two custom CSS animations using @keyframes */
+
+/* Animation 1: Fade-in effect for sections */
+@keyframes fadeInSection {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  html { scroll-behavior: auto !important; }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-
-@keyframes fadeInUpStrong {
-  0% { opacity: 0; transform: translateY(22px); }
-  60% { opacity: 1; transform: translateY(-6px); }
-  100% { opacity: 1; transform: translateY(0); }
+/* Animation 2: Hover effect on buttons and links */
+@keyframes slideUnderline {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
-
-@keyframes floatSpin {
-  0%   { transform: translateY(0) rotate(0deg); }
-  50%  { transform: translateY(-10px) rotate(2deg); }
-  100% { transform: translateY(0) rotate(0deg); }
+/* Apply fade-in animation to all sections */
+section {
+  animation: fadeInSection 0.8s ease-out forwards;
 }
 
-
-#site-main > section,
-#site-main > .section {
-  opacity: 0;
-  transform-origin: center;
-  animation-name: fadeInUpStrong;
-  animation-duration: 700ms;
-  animation-timing-function: cubic-bezier(.22,.9,.36,1);
-  animation-fill-mode: forwards;
-  animation-delay: 0.15s;
-}
-
-
-#hero, #hero-banner, .hero {
-  animation-duration: 900ms;
-  animation-delay: 0.05s;
-}
-
-
-.icon-deco, .floating-shape {
-  display: inline-block;
-  animation: floatSpin 6s ease-in-out infinite;
-}
-
-
-.btn {
-  transition: transform 260ms cubic-bezier(.2,.8,.2,1), box-shadow 260ms;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(0,0,0,0.12); }
-}
-
-
+/* Task 4: CSS-only loader (pulsing dots) */
 #css-loader {
   position: fixed;
-  inset: 0;              
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.9);
-  z-index: 99999;
-  transition: opacity 300ms ease, visibility 300ms ease;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 9999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
 }
 
-
-html.site-ready #css-loader,
-html.loaded #css-loader {
+html.site-ready #css-loader {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
 .loader-dots {
-  display: inline-flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
+  display: flex;
+  gap: 10px;
 }
-
 
 .loader-dots span {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  /* Updated gradient for a modern look */
-  background: linear-gradient(135deg,#6C5CE7,#00B4D8);
-  display: block;
-  transform-origin: center;
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(108,92,231,0.18);
-  animation: loaderPulse 1.1s infinite ease-in-out;
+  background-color: #0056ff;
+  animation: pulse 1.2s infinite ease-in-out;
 }
 
-
-.loader-dots span:nth-child(1) { animation-delay: 0s; }
-.loader-dots span:nth-child(2) { animation-delay: 0.18s; }
-.loader-dots span:nth-child(3) { animation-delay: 0.36s; }
-
-
-@keyframes loaderPulse {
-  0%   { transform: scale(0.6); opacity: 0.5; }
-  40%  { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(0.8); opacity: 0.6; }
+.loader-dots span:nth-child(1) {
+  animation-delay: 0s;
 }
 
+.loader-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
 
+.loader-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Task 5: Respect prefers-reduced-motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .loader-dots span { animation: none; transform: scale(1); }
+  section {
+    animation: none;
+  }
+
+  .loader-dots span {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  #css-loader {
+    transition: none;
+  }
+
+  a:hover::after {
+    animation: none;
+  }
+
+  .btn:hover {
+    animation: none;
+    transition: none;
+  }
+
+  .shape {
+    animation: none;
+  }
 }
 
-
-#css-loader.decorative {
-  position: static;
-  background: transparent;
-  z-index: auto;
+/* Enhanced button hover with animation */
+.btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  animation: slideUnderline 0.3s ease-out forwards;
 }
 
-
-:focus {
-  outline: 2px dashed #ff5500;
-  outline-offset: 3px;
+/* Optional Task: Decorative CSS shapes (circles) */
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
 }
 
-
-[hidden] { display: none !important; }
-
-
-
-.animated-gradient {
-  background: linear-gradient(270deg,#6C5CE7,#00B4D8,#7FD3A7,#FFD6E0);
-  background-size: 800% 800%;
-  animation: gradientShift 16s ease infinite;
-  border-radius: 10px;
+.shape-1 {
+  width: 200px;
+  height: 200px;
+  background-color: #0056ff;
+  top: 50px;
+  right: 50px;
+  animation: float 6s ease-in-out infinite;
 }
 
-@keyframes gradientShift {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+.shape-2 {
+  width: 150px;
+  height: 150px;
+  background-color: #ff5500;
+  bottom: 100px;
+  left: 50px;
+  animation: rotate 8s linear infinite;
 }
 
-
-@media (prefers-reduced-motion: reduce) {
-  .animated-gradient { animation: none; background-size: cover; }
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(20px);
+  }
 }
 
-
-#resume, #portfolio, #services {
-  background: rgba(250,250,255,0.6);
-  border-radius: 8px;
-  padding: 30px;
-  animation-delay: 0.18s;
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
-
-
-.hero .floating-shape { position: absolute; left: 10%; top: 10%; }
 
 /* ====================== Lab 5: Contact Form Styles ====================== */
 
