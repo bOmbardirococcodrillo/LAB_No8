@@ -332,7 +332,7 @@ html.site-ready #css-loader {
   z-index: -1;
   background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
   background-size: 400% 400%;
-  opacity: 0.12;
+  opacity: 0.25;
   pointer-events: none;
   transform: translateZ(0);
   animation: gradientShift 20s ease infinite;
