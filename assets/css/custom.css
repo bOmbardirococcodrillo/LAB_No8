@@ -329,13 +329,19 @@ html.site-ready #css-loader {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
-  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
-  background-size: 400% 400%;
-  opacity: 0.25;
+  z-index: 1;
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #667eea 100%);
+  background-size: 300% 300%;
+  opacity: 0.6;
   pointer-events: none;
   transform: translateZ(0);
-  animation: gradientShift 20s ease infinite;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* Ensure content appears above gradient */
+main, header, footer, section {
+  position: relative;
+  z-index: 2;
 }
 
 /* Advanced hover effects for interactive elements */
