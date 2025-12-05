@@ -232,11 +232,6 @@ table.custom-table {
 
 /* ==================== LAB 10: CSS Animations and Loader ==================== */
 
-/* Task 1 & 2: Custom CSS file linked last, semantic layout verified in HTML */
-
-/* Task 3: Two custom CSS animations using @keyframes */
-
-/* Animation 1: Fade-in effect for sections */
 @keyframes fadeInSection {
   from {
     opacity: 0;
@@ -248,7 +243,7 @@ table.custom-table {
   }
 }
 
-/* Animation 2: Hover effect on buttons and links */
+
 @keyframes slideUnderline {
   from {
     width: 0;
@@ -258,12 +253,12 @@ table.custom-table {
   }
 }
 
-/* Apply fade-in animation to all sections */
+
 section {
   animation: fadeInSection 0.8s ease-out forwards;
 }
 
-/* Task 4: CSS-only loader (pulsing dots) */
+
 #css-loader {
   position: fixed;
   top: 0;
@@ -321,7 +316,65 @@ html.site-ready #css-loader {
     transform: scale(1.2);
   }
 }
+/* Animated Gradient Background & Advanced Hover Effects */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
+/* Subtle animated gradient overlay for the whole page (non-invasive)
+   Uses .index-page class (body has this class in template) */
+.index-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+  background-size: 400% 400%;
+  opacity: 0.12;
+  pointer-events: none;
+  transform: translateZ(0);
+  animation: gradientShift 20s ease infinite;
+}
+
+/* Advanced hover effects for interactive elements */
+.btn, .btn-game, .btn-accent {
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.btn:hover, .btn-game:hover, .btn-accent:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25), 0 0 28px rgba(255,255,255,0.03) inset;
+  filter: saturate(1.05);
+}
+
+/* Animated underline for links */
+a {
+  position: relative;
+}
+a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.4));
+  transition: width 220ms cubic-bezier(.2,.9,.2,1);
+}
+a:hover::after {
+  width: 100%;
+}
+
+/* Slight glow for social icons */
+.social-links a:hover {
+  transform: translateY(-3px) scale(1.05);
+  filter: drop-shadow(0 6px 18px rgba(118,75,162,0.25));
+}
+
+/* Ensure reduced-motion users don't get large animation churn */
 /* Task 5: Respect prefers-reduced-motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   section {
@@ -350,9 +403,31 @@ html.site-ready #css-loader {
   .shape {
     animation: none;
   }
+  .loader-dots span {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  #css-loader {
+    transition: none;
+  }
+
+  a:hover::after {
+    animation: none;
+  }
+
+  .btn:hover {
+    animation: none;
+    transition: none;
+  }
+
+  .shape {
+    animation: none;
+  }
 }
 
-/* Enhanced button hover with animation */
+
 .btn::after {
   content: '';
   position: absolute;
@@ -407,7 +482,7 @@ html.site-ready #css-loader {
   }
 }
 
-/* ====================== Lab 5: Contact Form Styles ====================== */
+/* ====================== Lab 11: Contact Form Styles ====================== */
 
 .custom-contact-form {
   background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(250,250,255,0.95));
